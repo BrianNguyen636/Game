@@ -20,6 +20,7 @@ public class Player {
     private static int speed = 10;
     private static int fireRate = 10;
     private static int fireTime = 0;
+    private int health = 100;
 
 
     public Player() {
@@ -92,6 +93,12 @@ public class Player {
         if (fireTime != 0) fireTime--;
 
     }
+    public void damage(int value) {
+        health -= value;
+    }
+    public boolean isDead() {
+        return health <= 0;
+    }
     public void keyPressed(KeyEvent e) {
         // every keyboard get has a certain code. get the value of that code from the
         // keyboard event so that we can compare it to KeyEvent constants
@@ -139,4 +146,5 @@ public class Player {
     public void mouseReleased(MouseEvent e) {
 
     }
+
 }
