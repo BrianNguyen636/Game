@@ -13,7 +13,7 @@ public class Enemy {
     public static int HEIGHT;
     // current position of the player on the board grid
     public Point pos;
-    private int speed = 4;
+    private int speed = 5;
     private int health = 100;
 
     public Enemy() {

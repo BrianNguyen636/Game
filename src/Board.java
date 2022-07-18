@@ -3,8 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class Board extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
-    private final int DELAY = 1000/60;
+public class Board extends JPanel implements ActionListener, KeyListener, MouseListener {
+    private final int DELAY = 1000 / 60;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 800;
     public static ArrayList<Bullet> bullets = new ArrayList<>();
@@ -13,9 +13,8 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     private Player player;
 
 
-
     public Board() {
-        setPreferredSize(new Dimension(WIDTH,HEIGHT));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(new Color(232, 232, 232));
 
         timer = new Timer(DELAY, this);
@@ -25,7 +24,9 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
             enemies.add(new Enemy());
         }
 
+
     }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -38,12 +39,12 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         drawBackground(g);
 
         for (Bullet bullet : bullets) {
-            bullet.draw(g,this);
+            bullet.draw(g, this);
         }
 
-        player.draw(g,this);
+        player.draw(g, this);
         for (Enemy enemy : enemies) {
-            enemy.draw(g,this);
+            enemy.draw(g, this);
         }
 
         // this smooths out animations on some systems
@@ -88,7 +89,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
                 int xDiff = bullet.getPos().x - enemy.pos.x;
                 int yDiff = bullet.getPos().y - enemy.pos.y;
                 if (xDiff > 0 && xDiff < Enemy.WIDTH &&
-                    yDiff > 0 && yDiff < Enemy.HEIGHT) {
+                        yDiff > 0 && yDiff < Enemy.HEIGHT) {
                     grave.add(bullet);
                     enemy.damage(bullet.damage);
                 }
@@ -139,14 +140,5 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     public void mouseExited(MouseEvent e) {
 
     }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        player.mousePressed(e);
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
 }
+
