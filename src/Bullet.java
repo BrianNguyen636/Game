@@ -4,14 +4,18 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class Bullet {
     private BufferedImage image;
     private Point pos;
     private Point target;
+    private double xTrajectory;
+    private double yTrajectory;
     private int speed = 50;
     private double xDiff, yDiff;
     private int pierce = 0;
+    private double spread = .10;
     public final int damage = 10;
 
     public Bullet(int x, int y) {
@@ -23,12 +27,20 @@ public class Bullet {
         target = new Point(x,y);
         xDiff = target.x - pos.x;
         yDiff = target.y - pos.y;
+        double distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff, 2));
+        Random rand = new Random();
+        double spreadX = rand.nextDouble(-spread,spread);
+        double spreadY = rand.nextDouble(-spread,spread);
+        xDiff += spreadX * distance;
+        yDiff += spreadY * distance;
+        xTrajectory = xDiff / distance;
+        yTrajectory = yDiff / distance;
     }
     public void tick() {
-        double distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff, 2));
+
         pos.translate(
-                (int) (speed * (xDiff / distance)),
-                (int) (speed * (yDiff / distance))
+                (int) (speed * (xTrajectory)),
+                (int) (speed * (yTrajectory))
         );
     }
 

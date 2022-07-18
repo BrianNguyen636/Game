@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 public class Player {
     // image that represents the player's position on the board
     private BufferedImage image;
+    public static int WIDTH;
+    public static int HEIGHT;
     // current position of the player on the board grid
     public static Point pos;
     private boolean up, down, left, right;
@@ -25,8 +27,10 @@ public class Player {
         loadImage();
 
         // initialize the state
-        pos = new Point((Board.WIDTH - image.getWidth())/2,
-                        (Board.HEIGHT - image.getHeight())/2);
+        WIDTH = image.getWidth();
+        HEIGHT = image.getHeight();
+        pos = new Point((Board.WIDTH - WIDTH)/2,
+                        (Board.HEIGHT - HEIGHT)/2);
     }
 
     private void loadImage() {
@@ -125,7 +129,7 @@ public class Player {
     }
     public void mousePressed(MouseEvent e) {
         if (fireTime == 0) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 6; i++) {
                 Bullet bullet = new Bullet(e.getX() - 12,e.getY() - 35);
                 Board.bullets.add(bullet);
             }

@@ -9,6 +9,8 @@ import java.util.Random;
 public class Enemy {
     // image that represents the player's position on the board
     private BufferedImage image;
+    public static int WIDTH;
+    public static int HEIGHT;
     // current position of the player on the board grid
     public Point pos;
     private int speed = 4;
@@ -19,6 +21,8 @@ public class Enemy {
         loadImage();
 
         // initialize the state
+        WIDTH = image.getWidth();
+        HEIGHT = image.getHeight();
         Random random = new Random();
         pos = new Point(random.nextInt(Board.WIDTH), 0);
     }
@@ -48,10 +52,10 @@ public class Enemy {
             int xDiff = enemy.pos.x - pos.x;
             int yDiff = enemy.pos.y - pos.y;
             //collision from left
-            if (xDiff < 50 && xDiff > 0) {
-                pos.x = enemy.pos.x - 50;
-            } else if (xDiff > -50 && xDiff < 0) {
-                pos.x = enemy.pos.x + 50;
+            if (xDiff < WIDTH && xDiff > 0) {
+                pos.x = enemy.pos.x - WIDTH;
+            } else if (xDiff > -WIDTH && xDiff < 0) {
+                pos.x = enemy.pos.x + WIDTH;
             }
 //            if (yDiff < 50 && yDiff > 0) {
 //                pos.y = enemy.pos.y - 50;
