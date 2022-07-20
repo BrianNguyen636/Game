@@ -4,13 +4,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Board extends JPanel implements ActionListener, KeyListener, MouseListener {
-    private final int DELAY = 1000 / 60;
+    private final int DELAY = 25;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 800;
     public static ArrayList<Bullet> bullets = new ArrayList<>();
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     private Timer timer;
     private Player player;
+    private static int gameTime = 0;
 
 
     public Board() {
@@ -23,8 +24,6 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         for (int i = 0; i < 3; i++) {
             enemies.add(new Enemy());
         }
-
-
     }
 
     @Override
@@ -37,6 +36,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
         // draw our graphics.
         drawBackground(g);
+        drawScore(g);
 
         for (Bullet bullet : bullets) {
             bullet.draw(g, this);
@@ -70,6 +70,38 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 //        }
     }
 
+    private void drawScore(Graphics g) {
+        // set the text to be displayed
+        String text = "Health: " + player.getHealth() + " Timer: " + gameTime / 40;
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(30, 201, 139));
+        g2d.setFont(new Font("Lato", Font.BOLD, 25));
+        // draw the score in the bottom center of the screen
+        // https://stackoverflow.com/a/27740330/4655368
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // the text will be contained within this rectangle.
+        // here I've sized it to be the entire bottom row of board tiles
+        Rectangle rect = new Rectangle(0,0 , WIDTH, 100);
+        // determine the x coordinate for the text
+        int x = rect.x + 50;
+        // determine the y coordinate for the text
+        // (note we add the ascent, as in java 2d 0 is top of the screen)
+        int y = rect.y + rect.height / 2;
+        // draw the string
+        g2d.drawString(text, x, y);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         player.tick();
@@ -86,8 +118,8 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         for (Enemy enemy : enemies) {
             enemy.tick();
             for (Bullet bullet : Board.bullets) {
-                int xDiff = bullet.getPos().x - enemy.pos.x;
-                int yDiff = bullet.getPos().y - enemy.pos.y;
+                int xDiff = bullet.getPos().x - enemy.getPos().x;
+                int yDiff = bullet.getPos().y - enemy.getPos().y;
                 if (xDiff > 0 && xDiff < Enemy.WIDTH &&
                         yDiff > 0 && yDiff < Enemy.HEIGHT) {
                     grave.add(bullet);
@@ -95,10 +127,18 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
                 }
             }
             if (enemy.isDead()) kill.add(enemy);
+            int xDiff = Player.getPos().x - enemy.getPos().x;
+            int yDiff = Player.getPos().y - enemy.getPos().y;
+            if (xDiff > 0 && xDiff < Enemy.WIDTH &&
+                    yDiff > 0 && yDiff < Enemy.HEIGHT) {
+                player.damage(30);
+            }
+
         }
         bullets.removeAll(grave);
         enemies.removeAll(kill);
         repaint();
+        gameTime++;
     }
 
     @Override

@@ -23,7 +23,7 @@ public class Bullet {
         loadImage();
 
         // initialize the state
-        pos = new Point(Player.pos.x + 22,Player.pos.y + 22);
+        pos = new Point(Player.getPos().x + 22,Player.getPos().y + 22);
         target = new Point(x,y);
         xDiff = target.x - pos.x;
         yDiff = target.y - pos.y;

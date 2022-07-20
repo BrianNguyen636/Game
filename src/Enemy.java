@@ -11,11 +11,12 @@ public class Enemy {
     private BufferedImage image;
     public static int WIDTH;
     public static int HEIGHT;
+
     // current position of the player on the board grid
-    public Point pos;
+
+    private Point pos;
     private int speed = 5;
     private int health = 100;
-
     public Enemy() {
         // load the assets
         loadImage();
@@ -26,27 +27,27 @@ public class Enemy {
         Random random = new Random();
         pos = new Point(random.nextInt(Board.WIDTH), 0);
     }
+
     public void tick() {
 
-        int xDiff = Player.pos.x - pos.x;
-        int yDiff = Player.pos.y - pos.y;
+        int xDiff = Player.getPos().x - pos.x;
+        int yDiff = Player.getPos().y - pos.y;
 
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            if (Player.pos.x > pos.x) {
+            if (Player.getPos().x > pos.x) {
                 pos.translate(speed, 0);
-            } else if (Player.pos.x < pos.x) {
+            } else if (Player.getPos().x < pos.x) {
                 pos.translate(-speed, 0);
             }
         } else {
-            if (Player.pos.y > pos.y) {
+            if (Player.getPos().y > pos.y) {
                 pos.translate(0, speed);
-            } else if (Player.pos.y < pos.y) {
+            } else if (Player.getPos().y < pos.y) {
                 pos.translate(0, -speed);
             }
         }
         collision();
     }
-
     private void collision() {
         for (Enemy enemy : Board.enemies) {
             int xDiff = enemy.pos.x - pos.x;
@@ -64,6 +65,10 @@ public class Enemy {
 //            }
         }
 
+    }
+
+    public Point getPos() {
+        return pos;
     }
 
     public void damage(int value) {

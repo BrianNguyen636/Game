@@ -1,6 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Code fragments taken from Learn Code By Gaming youtube:
+ * https://github.com/learncodebygaming/java_2d_game
+ */
 public class Main {
 
     private static void initWindow() {

@@ -15,12 +15,15 @@ public class Player {
     public static int WIDTH;
     public static int HEIGHT;
     // current position of the player on the board grid
-    public static Point pos;
+    private static Point pos;
     private boolean up, down, left, right;
     private static int speed = 10;
     private static int fireRate = 10;
     private static int fireTime = 0;
+
     private int health = 100;
+
+    private static int iFrames = 0;
 
 
     public Player() {
@@ -43,6 +46,7 @@ public class Player {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
     }
+
     public void draw(Graphics g, ImageObserver observer) {
 
         g.drawImage(
@@ -52,6 +56,11 @@ public class Player {
                 observer
         );
     }
+
+    public int getHealth() {
+        return health;
+    }
+
     public void tick() {
         // this gets called once every tick, before the repainting process happens.
         // so we can do anything needed in here to update the state of the player.
@@ -91,10 +100,14 @@ public class Player {
         }
 
         if (fireTime != 0) fireTime--;
+        if (iFrames != 0) iFrames--;
 
     }
     public void damage(int value) {
-        health -= value;
+        if (iFrames == 0) {
+            health -= value;
+            iFrames = 30;
+        }
     }
     public boolean isDead() {
         return health <= 0;
@@ -134,6 +147,9 @@ public class Player {
         }
 
     }
+    public static Point getPos() {
+        return pos;
+    }
     public void mousePressed(MouseEvent e) {
         if (fireTime == 0) {
             for (int i = 0; i < 6; i++) {
@@ -143,8 +159,8 @@ public class Player {
             fireTime = fireRate;
         }
     }
+
     public void mouseReleased(MouseEvent e) {
 
     }
-
 }
