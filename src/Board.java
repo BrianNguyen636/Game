@@ -21,9 +21,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         timer = new Timer(DELAY, this);
         timer.start();
         player = new Player();
-        for (int i = 0; i < 3; i++) {
-            enemies.add(new Enemy());
-        }
+
     }
 
     @Override
@@ -43,6 +41,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         }
 
         player.draw(g, this);
+
         for (Enemy enemy : enemies) {
             enemy.draw(g, this);
         }
@@ -105,6 +104,13 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     @Override
     public void actionPerformed(ActionEvent e) {
         player.tick();
+        if (Player.isReady()) {
+            Player.setReady(false);
+            for (int i = 0; i < 3; i++) {
+                enemies.add(new Enemy());
+            }
+        }
+
         ArrayList<Bullet> grave = new ArrayList<>();
         ArrayList<Enemy> kill = new ArrayList<>();
 

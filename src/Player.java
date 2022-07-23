@@ -17,12 +17,12 @@ public class Player {
     // current position of the player on the board grid
     private static Point pos;
     private boolean up, down, left, right;
+
+    private static boolean ready = false;
     private static int speed = 10;
     private static int fireRate = 10;
     private static int fireTime = 0;
-
     private int health = 100;
-
     private static int iFrames = 0;
 
 
@@ -35,30 +35,6 @@ public class Player {
         HEIGHT = image.getHeight();
         pos = new Point((Board.WIDTH - WIDTH)/2,
                         (Board.HEIGHT - HEIGHT)/2);
-    }
-
-    private void loadImage() {
-        try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            image = ImageIO.read(new File("watame.png"));
-        } catch (IOException exc) {
-            System.out.println("Error opening image file: " + exc.getMessage());
-        }
-    }
-
-    public void draw(Graphics g, ImageObserver observer) {
-
-        g.drawImage(
-                image,
-                pos.x,
-                pos.y,
-                observer
-        );
-    }
-
-    public int getHealth() {
-        return health;
     }
 
     public void tick() {
@@ -103,6 +79,11 @@ public class Player {
         if (iFrames != 0) iFrames--;
 
     }
+
+    public int getHealth() {
+        return health;
+    }
+
     public void damage(int value) {
         if (iFrames == 0) {
             health -= value;
@@ -112,10 +93,47 @@ public class Player {
     public boolean isDead() {
         return health <= 0;
     }
+
+    public static boolean isReady() {
+        return ready;
+    }
+
+    public static void setReady(boolean ready) {
+        Player.ready = ready;
+    }
+
+    public static Point getPos() {
+        return pos;
+    }
+
+    private void loadImage() {
+        try {
+            // you can use just the filename if the image file is in your
+            // project folder, otherwise you need to provide the file path.
+            image = ImageIO.read(new File("watame.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+    }
+
+    public void draw(Graphics g, ImageObserver observer) {
+
+        g.drawImage(
+                image,
+                pos.x,
+                pos.y,
+                observer
+        );
+    }
+
     public void keyPressed(KeyEvent e) {
         // every keyboard get has a certain code. get the value of that code from the
         // keyboard event so that we can compare it to KeyEvent constants
         int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_F) {
+            if (!isReady()) setReady(true);
+        }
 
         if (key == KeyEvent.VK_W) {
             up = true;
@@ -146,9 +164,6 @@ public class Player {
             left = false;
         }
 
-    }
-    public static Point getPos() {
-        return pos;
     }
     public void mousePressed(MouseEvent e) {
         if (fireTime == 0) {

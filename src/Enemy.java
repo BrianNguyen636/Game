@@ -32,20 +32,11 @@ public class Enemy {
 
         int xDiff = Player.getPos().x - pos.x;
         int yDiff = Player.getPos().y - pos.y;
-
-        if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            if (Player.getPos().x > pos.x) {
-                pos.translate(speed, 0);
-            } else if (Player.getPos().x < pos.x) {
-                pos.translate(-speed, 0);
-            }
-        } else {
-            if (Player.getPos().y > pos.y) {
-                pos.translate(0, speed);
-            } else if (Player.getPos().y < pos.y) {
-                pos.translate(0, -speed);
-            }
-        }
+        double distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff, 2));
+        pos.translate(
+                (int) (xDiff * speed / distance),
+                (int) (yDiff * speed / distance)
+        );
         collision();
     }
     private void collision() {
@@ -57,6 +48,7 @@ public class Enemy {
                 pos.x = enemy.pos.x - WIDTH;
             } else if (xDiff > -WIDTH && xDiff < 0) {
                 pos.x = enemy.pos.x + WIDTH;
+
             }
 //            if (yDiff < 50 && yDiff > 0) {
 //                pos.y = enemy.pos.y - 50;
