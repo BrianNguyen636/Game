@@ -101,15 +101,24 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         g2d.drawString(text, x, y);
     }
 
+    public void gameTick() {
+        enemies.add(new Enemy());
+        if (gameTime % (40 * 30) == 0) {
+            Enemy.buff(1,20);
+        }
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         player.tick();
-        if (Player.isReady()) {
-            Player.setReady(false);
-            for (int i = 0; i < 3; i++) {
-                enemies.add(new Enemy());
-            }
-        }
+//        if (Player.isReady()) {
+//            Player.setReady(false);
+//            for (int i = 0; i < 3; i++) {
+//                enemies.add(new Enemy());
+//            }
+//        }
+        if (gameTime % 40 == 0) gameTick();
 
         ArrayList<Bullet> grave = new ArrayList<>();
         ArrayList<Enemy> kill = new ArrayList<>();

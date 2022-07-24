@@ -15,8 +15,9 @@ public class Enemy {
     // current position of the player on the board grid
 
     private Point pos;
-    private int speed = 5;
-    private int health = 100;
+    private static int speed = 5;
+    private static int maxHealth = 100;
+    private int health = maxHealth;
     public Enemy() {
         // load the assets
         loadImage();
@@ -25,7 +26,17 @@ public class Enemy {
         WIDTH = image.getWidth();
         HEIGHT = image.getHeight();
         Random random = new Random();
-        pos = new Point(random.nextInt(Board.WIDTH), random.nextInt(Board.HEIGHT));
+        int position = random.nextInt(4);
+        switch (position) {
+            case 0 -> pos = new Point(0, random.nextInt(Board.HEIGHT));
+            case 1 -> pos = new Point(Board.WIDTH, random.nextInt(Board.HEIGHT));
+            case 2 -> pos = new Point(random.nextInt(Board.WIDTH), 0);
+            case 3 -> pos = new Point(random.nextInt(Board.WIDTH), Board.HEIGHT);
+        }
+    }
+    public static void buff(int spd, int hp) {
+        speed += spd;
+        maxHealth += hp;
     }
 
     public void tick() {

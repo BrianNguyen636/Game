@@ -42,6 +42,7 @@ public class Player {
         // so we can do anything needed in here to update the state of the player.
 
         // prevent the player from moving off the edge of the board sideways
+
         if (up) {
             if (!left && !right) {
                 pos.translate(0,-speed);
