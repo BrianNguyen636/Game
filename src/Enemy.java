@@ -25,7 +25,7 @@ public class Enemy {
         WIDTH = image.getWidth();
         HEIGHT = image.getHeight();
         Random random = new Random();
-        pos = new Point(random.nextInt(Board.WIDTH), 0);
+        pos = new Point(random.nextInt(Board.WIDTH), random.nextInt(Board.HEIGHT));
     }
 
     public void tick() {
@@ -37,8 +37,9 @@ public class Enemy {
                 (int) (xDiff * speed / distance),
                 (int) (yDiff * speed / distance)
         );
-        collision();
+//        collision();
     }
+    //meh
     private void collision() {
         for (Enemy enemy : Board.enemies) {
             int xDiff = enemy.pos.x - pos.x;
