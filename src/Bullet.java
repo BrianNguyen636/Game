@@ -62,8 +62,8 @@ public abstract class Bullet {
         return fireDelay;
     }
 
-    public static void setFireDelay(int fireDelay) {
-        Bullet.fireDelay = fireDelay;
+    public static void setFireDelay(int delay) {
+        fireDelay = delay;
     }
 
     public int getSpeed() {
@@ -87,7 +87,7 @@ public abstract class Bullet {
     }
 
     public void setDamage(int damage) {
-        this.damage = damage;
+        Bullet.damage = damage;
     }
 
     public Point getPos() {

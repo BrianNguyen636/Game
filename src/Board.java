@@ -137,7 +137,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
                 if (xDiff > 0 && xDiff < Enemy.WIDTH &&
                         yDiff > 0 && yDiff < Enemy.HEIGHT) {
                     grave.add(bullet);
-                    enemy.damage(bullet.damage);
+                    enemy.damage(bullet.getDamage());
                 }
             }
             if (enemy.isDead()) kill.add(enemy);

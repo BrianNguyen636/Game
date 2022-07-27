@@ -1,17 +1,17 @@
 import java.util.Random;
 
-public class Shotgun extends Bullet {
+public class SMG extends Bullet {
     private double spread;
 
-    public Shotgun(int x, int y) {
+    public SMG(int x, int y) {
         super(x, y);
         loadImage("bullet.png");
 
         speed = 50;
-        damage = 10;
+        damage = 15;
         pierce = 0;
-        spread = .10;
-        fireDelay = 20;
+        spread = .1;
+        fireDelay = 4;
 
         Random rand = new Random();
         double spreadX = rand.nextDouble(-spread,spread);

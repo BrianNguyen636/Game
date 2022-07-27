@@ -164,14 +164,23 @@ public class Player {
         }
 
     }
-    public void fire(int x, int y) {
+    private void shotgun(int x, int y) {
         if (fireTime == 0) {
             for (int i = 0; i < 6; i++) {
-                Bullet bullet = new Shotgun(x,y);
-                Board.bullets.add(bullet);
+                Board.bullets.add(new Shotgun(x,y));
             }
             fireTime = Shotgun.getFireDelay();
         }
+    }
+    private void SMG(int x, int y) {
+        if (fireTime == 0) {
+            Board.bullets.add(new SMG(x,y));
+            fireTime = SMG.getFireDelay();
+        }
+    }
+    public void fire(int x, int y) {
+//        shotgun(x,y);
+        SMG(x,y);
     }
     public void mousePressed(MouseEvent e) {
 //        if (fireTime == 0) {
