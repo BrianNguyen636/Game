@@ -19,7 +19,6 @@ public class Player {
 
     private static boolean ready = false;
     private static int speed = 10;
-    private static int fireRate = 20;
     private static int fireTime = 0;
     private int health = 100;
     private static int iFrames = 0;
@@ -168,20 +167,20 @@ public class Player {
     public void fire(int x, int y) {
         if (fireTime == 0) {
             for (int i = 0; i < 6; i++) {
-                Bullet bullet = new Bullet(x,y);
+                Bullet bullet = new Shotgun(x,y);
                 Board.bullets.add(bullet);
             }
-            fireTime = fireRate;
+            fireTime = Shotgun.getFireDelay();
         }
     }
     public void mousePressed(MouseEvent e) {
-        if (fireTime == 0) {
-            for (int i = 0; i < 6; i++) {
-                Bullet bullet = new Bullet(e.getX() - 12,e.getY() - 35);
-                Board.bullets.add(bullet);
-            }
-            fireTime = fireRate;
-        }
+//        if (fireTime == 0) {
+//            for (int i = 0; i < 6; i++) {
+//                Bullet bullet = new Shotgun(e.getX() - 12,e.getY() - 35);
+//                Board.bullets.add(bullet);
+//            }
+//            fireTime = fireRate;
+//        }
     }
 
     public void mouseReleased(MouseEvent e) {

@@ -4,38 +4,34 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
-public class Bullet {
-    private BufferedImage image;
-    private Point pos;
-    private Point target;
-    private double xTrajectory;
-    private double yTrajectory;
-    private int speed = 50;
-    private double xDiff, yDiff;
-    private int pierce = 0;
-    private double spread = .10;
-    public final int damage = 10;
+public abstract class Bullet {
+    BufferedImage image;
+    Point pos;
+    Point target;
+    double xTrajectory;
+    double yTrajectory;
+    double distance;
+    double xDiff, yDiff;
+
+    static int speed;
+    int pierce;
+    static int damage;
+    static int fireDelay;
 
     public Bullet(int x, int y) {
         // load the assets
-        loadImage();
 
         // initialize the state
         pos = new Point(Player.getPos().x + 22,Player.getPos().y + 22);
         target = new Point(x,y);
         xDiff = target.x - pos.x;
         yDiff = target.y - pos.y;
-        double distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff, 2));
-        Random rand = new Random();
-        double spreadX = rand.nextDouble(-spread,spread);
-        double spreadY = rand.nextDouble(-spread,spread);
-        xDiff += spreadX * distance;
-        yDiff += spreadY * distance;
+        distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff, 2));
         xTrajectory = xDiff / distance;
         yTrajectory = yDiff / distance;
     }
+
     public void tick() {
 
         pos.translate(
@@ -43,16 +39,16 @@ public class Bullet {
                 (int) (speed * (yTrajectory))
         );
     }
-
-    private void loadImage() {
+    public void loadImage(String filename) {
         try {
             // you can use just the filename if the image file is in your
             // project folder, otherwise you need to provide the file path.
-            image = ImageIO.read(new File("bullet.png"));
+            image = ImageIO.read(new File(filename));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
     }
+
     public void draw(Graphics g, ImageObserver observer) {
         g.drawImage(
                 image,
@@ -61,6 +57,39 @@ public class Bullet {
                 observer
         );
     }
+
+    public static int getFireDelay() {
+        return fireDelay;
+    }
+
+    public static void setFireDelay(int fireDelay) {
+        Bullet.fireDelay = fireDelay;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        Bullet.speed = speed;
+    }
+
+    public int getPierce() {
+        return pierce;
+    }
+
+    public void setPierce(int pierce) {
+        this.pierce = pierce;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public Point getPos() {
         return pos;
     }
