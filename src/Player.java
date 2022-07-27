@@ -1,9 +1,8 @@
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -20,7 +19,7 @@ public class Player {
 
     private static boolean ready = false;
     private static int speed = 10;
-    private static int fireRate = 10;
+    private static int fireRate = 20;
     private static int fireTime = 0;
     private int health = 100;
     private static int iFrames = 0;
@@ -165,6 +164,15 @@ public class Player {
             left = false;
         }
 
+    }
+    public void fire(int x, int y) {
+        if (fireTime == 0) {
+            for (int i = 0; i < 6; i++) {
+                Bullet bullet = new Bullet(x,y);
+                Board.bullets.add(bullet);
+            }
+            fireTime = fireRate;
+        }
     }
     public void mousePressed(MouseEvent e) {
         if (fireTime == 0) {

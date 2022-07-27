@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class Board extends JPanel implements ActionListener, KeyListener, MouseListener {
+public class Board extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener{
     private final int DELAY = 25;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 800;
@@ -111,13 +111,12 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         player.tick();
-//        if (Player.isReady()) {
-//            Player.setReady(false);
-//            for (int i = 0; i < 3; i++) {
-//                enemies.add(new Enemy());
-//            }
-//        }
+        player.fire(
+                MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x,
+                MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y
+        );
         if (gameTime % 40 == 0) gameTick();
 
         ArrayList<Bullet> grave = new ArrayList<>();
@@ -157,6 +156,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         gameTime++;
     }
 
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -179,7 +179,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        player.mousePressed(e);
+
     }
 
     @Override
@@ -194,6 +194,16 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
 }
