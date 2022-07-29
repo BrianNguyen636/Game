@@ -133,6 +133,9 @@ public class Player {
         if (key == KeyEvent.VK_F) {
             if (!isReady()) setReady(true);
         }
+        if (key == KeyEvent.VK_ESCAPE) {
+            Board.pause();
+        }
 
         if (key == KeyEvent.VK_W) {
             up = true;
@@ -179,7 +182,7 @@ public class Player {
         }
     }
     public void fire(int x, int y) {
-//        shotgun(x,y);
+        shotgun(x,y);
         SMG(x,y);
     }
     public void mousePressed(MouseEvent e) {

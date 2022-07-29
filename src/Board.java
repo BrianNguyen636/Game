@@ -9,7 +9,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     public static final int HEIGHT = 800;
     public static ArrayList<Bullet> bullets = new ArrayList<>();
     public static ArrayList<Enemy> enemies = new ArrayList<>();
-    private Timer timer;
+    private static Timer timer;
     private Player player;
     private static int gameTime = 0;
 
@@ -34,7 +34,8 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
         // draw our graphics.
         drawBackground(g);
-        drawScore(g);
+        drawText(g);
+        if (player.isDead()) drawGameOver(g);
 
         for (Bullet bullet : bullets) {
             bullet.draw(g, this);
@@ -69,7 +70,26 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 //        }
     }
 
-    private void drawScore(Graphics g) {
+    private void drawGameOver(Graphics g) {
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(255, 43, 43));
+        g2d.setFont(new Font("Lato", Font.BOLD, 25));
+
+        g2d.drawString("GAME OVER", WIDTH / 2 - 100, HEIGHT / 2);
+    }
+
+    private void drawText(Graphics g) {
         // set the text to be displayed
         String text = "Health: " + player.getHealth() + " Timer: " + gameTime / 40;
         // we need to cast the Graphics to Graphics2D to draw nicer text
@@ -90,7 +110,6 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         // https://stackoverflow.com/a/27740330/4655368
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
         // the text will be contained within this rectangle.
-        // here I've sized it to be the entire bottom row of board tiles
         Rectangle rect = new Rectangle(0,0 , WIDTH, 100);
         // determine the x coordinate for the text
         int x = rect.x + 50;
@@ -112,8 +131,11 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        if (player.isDead()) {
+            timer.stop();
+        }
         player.tick();
-        player.fire(
+        player.fire (
                 MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x,
                 MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y
         );
@@ -154,6 +176,13 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         enemies.removeAll(kill);
         repaint();
         gameTime++;
+    }
+    public static void pause() {
+        if (timer.isRunning()) {
+            timer.stop();
+        } else {
+            timer.start();
+        }
     }
 
 

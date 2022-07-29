@@ -15,6 +15,7 @@ public class Main {
         window.add(board);
         window.addKeyListener(board);
         window.addMouseListener(board);
+        window.addMouseMotionListener(board);
 
         window.setResizable(false);
         window.pack();
