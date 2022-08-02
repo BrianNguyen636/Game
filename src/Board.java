@@ -1,3 +1,5 @@
+import org.w3c.dom.css.RGBColor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,6 +14,8 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     private static Timer timer;
     private Player player;
     private static int gameTime = 0;
+    private static boolean shopping = false;
+    private static int wave = 1;
 
 
     public Board() {
@@ -35,6 +39,7 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         // draw our graphics.
         drawBackground(g);
         drawText(g);
+        if (shopping) drawShop(g);
         if (player.isDead()) drawGameOver(g);
 
         for (Bullet bullet : bullets) {
@@ -70,6 +75,35 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 //        }
     }
 
+    private void drawShop(Graphics g) {
+        Rectangle rect1 = new Rectangle(100,100,300,300);
+        Rectangle rect2 = new Rectangle(450,100,300,300);
+        Rectangle rect3 = new Rectangle(WIDTH - 400, 100, 300,300);
+        g.setColor(new Color(248, 200, 160));
+        g.fillRect(rect1.x,rect1.y, rect1.width,rect1.height);
+        g.fillRect(rect2.x,rect2.y, rect2.width,rect2.height);
+        g.fillRect(rect3.x,rect3.y, rect3.width,rect3.height);
+        g.setColor(Color.red);
+        g.fillRect(rect2.x, 500, 300, 100);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(Color.black);
+        g2d.setFont(new Font("Lato", Font.BOLD, 25));
+        g2d.drawString("$200 Damage up", rect1.x + 50, rect1.y + rect1.height/2);
+        g2d.drawString("$200 Fire rate up", rect2.x + 50, rect2.y + rect2.height/2);
+        g2d.drawString("$500 Pierce up", rect3.x + 50, rect3.y + rect3.height/2);
+        g2d.drawString("Skip", rect2.x + 50, 550);
+    }
+
     private void drawGameOver(Graphics g) {
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
@@ -91,7 +125,17 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
     private void drawText(Graphics g) {
         // set the text to be displayed
-        String text = "Health: " + player.getHealth() + " Timer: " + gameTime / 40;
+        int seconds = 30 - (gameTime / 40) ;
+        String secs;
+        if (seconds < 10) {
+            secs = "0" + seconds;
+        } else {
+            secs = "" + seconds;
+        }
+        String text = "Health: " + player.getHealth() +
+                    " | Money: $" + player.getMoney() +
+                    " | Wave: " + wave +
+                    " | Timer: " + secs;
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
@@ -119,13 +163,20 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         // draw the string
         g2d.drawString(text, x, y);
     }
+    private void waveEnd() {
+        enemies.clear();
+        player.setReady(false);
+        shopping = true;
+        gameTime = 0;
+        wave++;
+        Enemy.buff(1,20);
+    }
 
     public void gameTick() {
         enemies.add(new Enemy());
-        if (gameTime % (40 * 30) == 0) {
-            Enemy.buff(1,20);
+        if (gameTime % (40 * 30) == 0 && gameTime > 0) {
+            waveEnd();
         }
-
     }
 
     @Override
@@ -135,11 +186,12 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
             timer.stop();
         }
         player.tick();
+        if (player.isReady())
         player.fire (
                 MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x,
                 MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y
         );
-        if (gameTime % 40 == 0) gameTick();
+        if (gameTime % 40 == 0 && player.isReady()) gameTick();
 
         ArrayList<Bullet> grave = new ArrayList<>();
         ArrayList<Enemy> kill = new ArrayList<>();
@@ -159,11 +211,13 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
                 if (xDiff > 0 && xDiff < Enemy.WIDTH &&
                         yDiff > 0 && yDiff < Enemy.HEIGHT) {
                     grave.add(bullet);
-                    enemy.damage(bullet.getDamage());
+                    enemy.damage((int) (Bullet.getDamage() * player.getDamageMod()));
                 }
             }
-            if (enemy.isDead()) kill.add(enemy);
-
+            if (enemy.isDead()) {
+                kill.add(enemy);
+                player.setMoney(player.getMoney() + 10);
+            }
 
             int xDiff = Player.getPos().x - enemy.getPos().x;
             int yDiff = Player.getPos().y - enemy.getPos().y;
@@ -175,13 +229,50 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         }
         enemies.removeAll(kill);
         repaint();
-        gameTime++;
+        if (player.isReady()) gameTime++;
     }
     public static void pause() {
         if (timer.isRunning()) {
             timer.stop();
         } else {
             timer.start();
+        }
+    }
+    public void shop (int x, int y) {
+        //shop 1
+        if (x > 100 && x < 400
+                && y > 100 && y < 400) {
+            if (player.getMoney() >= 200) {
+                player.setMoney(player.getMoney() - 200);
+                player.setDamageMod(player.getDamageMod() * 1.5);
+                player.setReady(true);
+                shopping = false;
+            }
+        }
+        //shop 2
+        if (x > 450 && x < 750
+                && y > 100 && y < 400) {
+            if (player.getMoney() >= 200) {
+                player.setMoney(player.getMoney() - 200);
+                player.setFireRateMod(player.getFireRateMod() * .5);
+                player.setReady(true);
+                shopping = false;
+            }
+        }
+//            if (x > 100 && x < 400
+//                    && y > 100 && y < 400) {
+//                if (player.getMoney() >= 200) {
+//                    player.setMoney(player.getMoney() - 200);
+//                    Shotgun.setDamage(Shotgun.getDamage() + 5);
+//                    player.setReady(true);
+//                    shopping = false;
+//                }
+//            }
+        //skip
+        if (x > 450 && x < 750
+                && y > 500 && y < 600) {
+            player.setReady(true);
+            shopping = false;
         }
     }
 
@@ -203,6 +294,9 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (shopping) {
+            shop(e.getX(),e.getY());
+        }
 
     }
 

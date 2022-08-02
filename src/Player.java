@@ -17,11 +17,14 @@ public class Player {
     private static Point pos;
     private boolean up, down, left, right;
 
-    private static boolean ready = false;
+    private int money = 0;
+    private boolean ready = true;
     private static int speed = 10;
     private static int fireTime = 0;
     private int health = 100;
     private static int iFrames = 0;
+    private double damageMod = 1;
+    private double fireRateMod = 1;
 
 
     public Player() {
@@ -89,16 +92,38 @@ public class Player {
             iFrames = 30;
         }
     }
+    public double getDamageMod() {
+        return damageMod;
+    }
+
+    public void setDamageMod(double damageMod) {
+        this.damageMod = damageMod;
+    }
+
+    public double getFireRateMod() {
+        return fireRateMod;
+    }
+
+    public void setFireRateMod(double fireRateMod) {
+        this.fireRateMod = fireRateMod;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+    public void setMoney(int money) {
+        this.money = money;
+    }
     public boolean isDead() {
         return health <= 0;
     }
 
-    public static boolean isReady() {
+    public boolean isReady() {
         return ready;
     }
 
-    public static void setReady(boolean ready) {
-        Player.ready = ready;
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 
     public static Point getPos() {
@@ -172,18 +197,17 @@ public class Player {
             for (int i = 0; i < 6; i++) {
                 Board.bullets.add(new Shotgun(x,y));
             }
-            fireTime = Shotgun.getFireDelay();
+            fireTime = (int) (Shotgun.getFireDelay() * fireRateMod);
         }
     }
     private void SMG(int x, int y) {
         if (fireTime == 0) {
             Board.bullets.add(new SMG(x,y));
-            fireTime = SMG.getFireDelay();
+            fireTime = (int) (SMG.getFireDelay() * fireRateMod);
         }
     }
     public void fire(int x, int y) {
         shotgun(x,y);
-        SMG(x,y);
     }
     public void mousePressed(MouseEvent e) {
 //        if (fireTime == 0) {
