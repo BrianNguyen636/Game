@@ -15,13 +15,13 @@ public abstract class Bullet {
     double xDiff, yDiff;
 
     static int speed;
-    int pierce;
     static int damage;
     static int fireDelay;
+    int pierce;
 
-    public Bullet(int x, int y) {
+    public Bullet(int x, int y, String filename) {
         // load the assets
-
+        loadImage(filename);
         // initialize the state
         pos = new Point(Player.getPos().x + 22,Player.getPos().y + 22);
         target = new Point(x,y);
@@ -39,7 +39,7 @@ public abstract class Bullet {
                 (int) (speed * (yTrajectory))
         );
     }
-    public void loadImage(String filename) {
+    private void loadImage(String filename) {
         try {
             // you can use just the filename if the image file is in your
             // project folder, otherwise you need to provide the file path.

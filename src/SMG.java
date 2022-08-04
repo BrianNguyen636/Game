@@ -4,9 +4,7 @@ public class SMG extends Bullet {
     private double spread;
 
     public SMG(int x, int y) {
-        super(x, y);
-        loadImage("bullet.png");
-
+        super(x, y, "bullet.png");
         speed = 50;
         damage = 15;
         pierce = 0;

@@ -25,7 +25,7 @@ public class Player {
     private static int iFrames = 0;
     private double damageMod = 1;
     private double fireRateMod = 1;
-
+    private int pierceBonus = 0;
 
     public Player() {
         // load the assets
@@ -92,6 +92,7 @@ public class Player {
             iFrames = 30;
         }
     }
+
     public double getDamageMod() {
         return damageMod;
     }
@@ -106,6 +107,14 @@ public class Player {
 
     public void setFireRateMod(double fireRateMod) {
         this.fireRateMod = fireRateMod;
+    }
+
+    public int getPierceBonus() {
+        return pierceBonus;
+    }
+
+    public void setPierceBonus(int pierceBonus) {
+        this.pierceBonus = pierceBonus;
     }
 
     public int getMoney() {
@@ -195,14 +204,18 @@ public class Player {
     private void shotgun(int x, int y) {
         if (fireTime == 0) {
             for (int i = 0; i < 6; i++) {
-                Board.bullets.add(new Shotgun(x,y));
+                Shotgun s = new Shotgun(x,y);
+                s.setPierce(getPierceBonus());
+                Board.bullets.add(s);
             }
             fireTime = (int) (Shotgun.getFireDelay() * fireRateMod);
         }
     }
     private void SMG(int x, int y) {
         if (fireTime == 0) {
-            Board.bullets.add(new SMG(x,y));
+            SMG s = new SMG(x,y);
+            s.setPierce(getPierceBonus());
+            Board.bullets.add(s);
             fireTime = (int) (SMG.getFireDelay() * fireRateMod);
         }
     }

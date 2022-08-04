@@ -1,9 +1,8 @@
-import org.w3c.dom.css.RGBColor;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 public class Board extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener{
     private final int DELAY = 25;
@@ -169,11 +168,16 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         shopping = true;
         gameTime = 0;
         wave++;
-        Enemy.buff(1,20);
     }
 
     public void gameTick() {
-        enemies.add(new Enemy());
+        if (wave == 1) {
+            enemies.add(new Grunt());
+        } else if (wave == 2) {
+            enemies.add(new Guard());
+        } else {
+            enemies.add(new Striker());
+        }
         if (gameTime % (40 * 30) == 0 && gameTime > 0) {
             waveEnd();
         }
@@ -210,20 +214,22 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
                 int yDiff = bullet.getPos().y - enemy.getPos().y;
                 if (xDiff > 0 && xDiff < Enemy.WIDTH &&
                         yDiff > 0 && yDiff < Enemy.HEIGHT) {
-                    grave.add(bullet);
-                    enemy.damage((int) (Bullet.getDamage() * player.getDamageMod()));
+                    if (bullet.getPierce() == 0) {
+                        grave.add(bullet);
+                    } else bullet.setPierce(bullet.getPierce() - 1);
+                    enemy.damaged((int) (Bullet.getDamage() * player.getDamageMod()));
                 }
             }
             if (enemy.isDead()) {
                 kill.add(enemy);
-                player.setMoney(player.getMoney() + 10);
+                player.setMoney(player.getMoney() + Enemy.getBounty());
             }
 
             int xDiff = Player.getPos().x - enemy.getPos().x;
             int yDiff = Player.getPos().y - enemy.getPos().y;
             if (xDiff > 0 && xDiff < Enemy.WIDTH &&
                     yDiff > 0 && yDiff < Enemy.HEIGHT) {
-                player.damage(30);
+                player.damage(Enemy.getDamage());
             }
             bullets.removeAll(grave);
         }
@@ -240,11 +246,15 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
     }
     public void shop (int x, int y) {
         //shop 1
+        int cost;
         if (x > 100 && x < 400
                 && y > 100 && y < 400) {
-            if (player.getMoney() >= 200) {
-                player.setMoney(player.getMoney() - 200);
+            cost = 200;
+            if (player.getMoney() >= cost) {
+                player.setMoney(player.getMoney() - cost);
+
                 player.setDamageMod(player.getDamageMod() * 1.5);
+
                 player.setReady(true);
                 shopping = false;
             }
@@ -252,22 +262,28 @@ public class Board extends JPanel implements ActionListener, KeyListener, MouseL
         //shop 2
         if (x > 450 && x < 750
                 && y > 100 && y < 400) {
-            if (player.getMoney() >= 200) {
-                player.setMoney(player.getMoney() - 200);
+            cost = 200;
+            if (player.getMoney() >= cost) {
+                player.setMoney(player.getMoney() - cost);
+
                 player.setFireRateMod(player.getFireRateMod() * .5);
+
                 player.setReady(true);
                 shopping = false;
             }
         }
-//            if (x > 100 && x < 400
-//                    && y > 100 && y < 400) {
-//                if (player.getMoney() >= 200) {
-//                    player.setMoney(player.getMoney() - 200);
-//                    Shotgun.setDamage(Shotgun.getDamage() + 5);
-//                    player.setReady(true);
-//                    shopping = false;
-//                }
-//            }
+        if (x > WIDTH - 400 && x < WIDTH - 100
+                && y > 100 && y < 400) {
+            cost = 500;
+            if (player.getMoney() >= cost) {
+                player.setMoney(player.getMoney() - cost);
+
+                player.setPierceBonus(player.getPierceBonus() + 1);
+
+                player.setReady(true);
+                shopping = false;
+            }
+        }
         //skip
         if (x > 450 && x < 750
                 && y > 500 && y < 600) {

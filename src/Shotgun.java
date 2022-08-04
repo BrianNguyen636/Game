@@ -4,9 +4,7 @@ public class Shotgun extends Bullet {
     private double spread;
 
     public Shotgun(int x, int y) {
-        super(x, y);
-        loadImage("bullet.png");
-
+        super(x, y, "bullet.png");
         speed = 50;
         damage = 10;
         pierce = 0;
